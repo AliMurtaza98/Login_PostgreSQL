@@ -38,6 +38,5 @@ app.get('/api/login/:nombre/:password', function (req,res){
   res.send("Error 404 : User doesn't exist !!");
 });
 
-app.listen(3000, function () {
-  console.log('Escuchando en el puerto 3000!');
-});
+var port = process.env.PORT||5000;
+app.listen(port,()=> console.log('Escuchando al puerto; '+port))
