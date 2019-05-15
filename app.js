@@ -51,7 +51,7 @@ app.get('/db/api/login/:username/:password', async (req, res) => {
     var password = req.params.password;
     try {
       const client = await pool.connect()
-      const result = await client.query("SELECT * FROM students WHERE name='"+username+"' AND password='"+password+"'");
+      const result = await client.query("SELECT * FROM students WHERE username='"+username+"' AND password='"+password+"'");
       const results = result.rows;
       json.username = username;
       json.password = password;
