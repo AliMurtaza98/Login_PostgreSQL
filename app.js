@@ -48,9 +48,10 @@ app.get('/api/login/:nombre/:password', function (req,res){
 app.get('/db/api/login/:nombre/:password', async (req, res) => {
   var json={};
     try {
-
       const client = await pool.connect()
-      const result = await client.query("select * from students where username='"+nombre+"' and password='"+password+"'");
+      //const result = await client.query("select * from students where username='"+nombre+"' and password='"+password+"'");
+      const result = await client.query("SELECT * FROM students WHERE name='"+username+"' AND password='"+password+"'");
+      const results = result.rows;
       if(result[0].rows>0){
           json.status="OK";
       }
