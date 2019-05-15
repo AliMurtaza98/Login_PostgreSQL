@@ -8,7 +8,7 @@ var login = [{name : 'Ali', pass : "1234"},
 //Conexion PostgreSQL (https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
 const { Pool } = require('pg');
 const pool = new Pool({
-  connectionString: "postgres://afmybgxecplsgr:a6b778bda504e59ec3240800444e47f5cedc423f805fbdfd4fb288009c490f1c@ec2-54-221-198-156.compute-1.amazonaws.com:5432/d61mnrfhhat2na",
+  connectionString:process.env.DATABASE_URL,
   ssl: true
 });
 
@@ -45,17 +45,24 @@ app.get('/api/login/:nombre/:password', function (req,res){
 });
 
 //PostgreSQL (ht  tps://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
-app.get('/db/api/login/:nombre/:password', async (req, res) => {
-  var json={};
+app.get('/db/api/login/:username/:password', async (req, res) => {
+    var json = {};
+    var username = req.params.username;
+    var password = req.params.password;
     try {
       const client = await pool.connect()
-      //const result = await client.query("select * from students where username='"+nombre+"' and password='"+password+"'");
       const result = await client.query("SELECT * FROM students WHERE name='"+username+"' AND password='"+password+"'");
       const results = result.rows;
-      if(result[0].rows>0){
-          json.status="OK";
+      json.username = username;
+      json.password = password;
+      //res.render('pages', results );
+      if(results[0] != null) {
+        json.status = "OK";
+      } else {
+        json.status = "ERROR";
       }
       res.send(json);
+      //res.send(JSON.stringify(results[0].name));
       client.release();
     } catch (err) {
       console.error(err);
