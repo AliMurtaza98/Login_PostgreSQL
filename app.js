@@ -46,15 +46,15 @@ app.get('/api/login/:nombre/:password', function (req,res){
 
 //PostgreSQL (ht  tps://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
 app.get('/db/api/login/:nombre/:password', async (req, res) => {
+  var json={};
     try {
+
       const client = await pool.connect()
-      const result = await client.query("select * from students where username='"+nombre+"' and password='"+password+"'");;
-      if(result.rows>0){
-        let usuarioLoged = {name:req.params.nombre,pass:req.params.password};
-        res.render('loged',{usuario:JSON.stringify(usuarioLoged)});
+      const result = await client.query("select * from students where username='"+nombre+"' and password='"+password+"'");
+      if(result[0].rows>0){
+          json.status="OK";
       }
       res.send(json);
-      //res.send(JSON.stringify(results[0].name));
       client.release();
     } catch (err) {
       console.error(err);
