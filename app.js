@@ -5,6 +5,12 @@ let app = express();
 var login = [{name : 'Ali', pass : "1234"},
                 {name : 'Roger', pass : "1234"},
                {name : 'David', pass : "1234"}];
+//Conexion PostgreSQL (https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+}); 
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.set('view engine', 'ejs');
@@ -38,5 +44,18 @@ app.get('/api/login/:nombre/:password', function (req,res){
   res.send("Error 404 : User doesn't exist !!");
 });
 
+//PostgreSQL (https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
+app.get('/db/api/login/:nombre/:password', async (req, res) => {
+    try {
+      const client = await pool.connect()
+      const result = await client.query("SELECT * FROM students WHERE username='"+nombre+"' AND password='"+password+"'");;
+      const results = { 'results': (result) ? result.rows : null};
+      res.render('pages/db', results );
+      client.release();
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
 var port = process.env.PORT||5000;
 app.listen(port,()=> console.log('Escuchando al puerto; '+port))
