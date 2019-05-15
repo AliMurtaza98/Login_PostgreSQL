@@ -38,25 +38,28 @@ app.get('/api/login/:nombre/:password', function (req,res){
     if(login[i]['name'] == req.params.nombre && login[i]['pass'] == req.params.password){
       let usuarioLoged = {name:req.params.nombre,pass:req.params.password};
       res.render('loged',{usuario:JSON.stringify(usuarioLoged)});
-      return; 
+      return;
     }
   }
   res.send("Error 404 : User doesn't exist !!");
 });
 
-//PostgreSQL (https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
+//PostgreSQL (ht  tps://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
 app.get('/db/api/login/:nombre/:password', async (req, res) => {
     try {
       const client = await pool.connect()
-      const result = await client.query("SELECT * FROM students WHERE username='"+nombre+"' AND password='"+password+"'");;
-      const results = { 'results': (result) ? result.rows : null};
-      res.render('pages/db', results );
+      const result = await client.query("select * from students where username='"+nombre+"' and password='"+password+"'");;
+      if(result.rows>0){
+        let usuarioLoged = {name:req.params.nombre,pass:req.params.password};
+        res.render('loged',{usuario:JSON.stringify(usuarioLoged)});
+      }
+      res.send(json);
+      //res.send(JSON.stringify(results[0].name));
       client.release();
     } catch (err) {
       console.error(err);
       res.send("Error " + err);
     }
   })
-
 var port = process.env.PORT||5000;
 app.listen(port,()=> console.log('Escuchando al puerto; '+port))
