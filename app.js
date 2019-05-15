@@ -8,7 +8,7 @@ var login = [{name : 'Ali', pass : "1234"},
 //Conexion PostgreSQL (https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
 const { Pool } = require('pg');
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: "postgres://afmybgxecplsgr:a6b778bda504e59ec3240800444e47f5cedc423f805fbdfd4fb288009c490f1c@ec2-54-221-198-156.compute-1.amazonaws.com:5432/d61mnrfhhat2na",
   ssl: true
 });
 
