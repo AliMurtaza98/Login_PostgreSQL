@@ -1,6 +1,8 @@
 let express = require('express');
 var bodyParser = require('body-parser');
 let app = express();
+app.use(bodyParser.urlencoded({extended: false}));
+app.set('view engine', 'ejs');
 //Array de objetos
 var login = [{name : 'Ali', pass : "1234"},
                 {name : 'Roger', pass : "1234"},
@@ -8,12 +10,9 @@ var login = [{name : 'Ali', pass : "1234"},
 //Conexion PostgreSQL (https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
 const { Pool } = require('pg');
 const pool = new Pool({
-  connectionString:process.env.DATABASE_URL,
+  connectionString:"process.env.DATABASE_URL,
   ssl: true
 });
-
-app.use(bodyParser.urlencoded({extended: false}));
-app.set('view engine', 'ejs');
 
 //Llamamos al form que es el html desde la barra que es el localhost
 app.get('/', function(req, res) {
@@ -45,29 +44,29 @@ app.get('/api/login/:nombre/:password', function (req,res){
 });
 
 //PostgreSQL (ht  tps://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
-app.get('/db/api/login/:username/:password', async (req, res) => {
-    var json = {};
+app.get('/db/api/login/:nombre/:password', async (req, res) => {
     var username = req.params.username;
     var password = req.params.password;
     try {
       const client = await pool.connect()
-      const result = await client.query("SELECT * FROM students WHERE username='"+username+"' AND password='"+password+"'");
+      //HAY 2 FORMAS DE HACERLO
+      /*
+      * Podriamos hacer SELECT * FROM students; y luego meterlo en array y recorrerlo comprobando si hay algun password y usuario que igualen, como es mas largo, esto es mas corto.
+      */
+      const result = await client.query("SELECT * FROM students WHERE username='"+nombre+"' AND password='"+password+"';");
       const results = result.rows;
-      json.username = username;
-      json.password = password;
-      //res.render('pages', results );
       if(results[0] != null) {
-        json.status = "OK";
-      } else {
-        json.status = "ERROR";
+        let usuarioLoged = {username,password};
+        res.render('loged',{usuario:JSON.stringify(usuarioLoged)});
+        return;
+      }else{
+        res.send("Error 404 : User is invalid !!");
       }
-      res.send(json);
-      //res.send(JSON.stringify(results[0].name));
       client.release();
     } catch (err) {
       console.error(err);
       res.send("Error " + err);
     }
-  })
+  });
 var port = process.env.PORT||5000;
 app.listen(port,()=> console.log('Escuchando al puerto; '+port))
