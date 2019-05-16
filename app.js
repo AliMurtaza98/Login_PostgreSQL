@@ -45,18 +45,16 @@ app.get('/api/login/:nombre/:password', function (req,res){
 
 //PostgreSQL (ht  tps://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
 app.get('/db/api/login/:nombre/:password', async (req, res) => {
-    var nombre = req.params.nombre;
-    var password = req.params.password;
     try {
       const client = await pool.connect()
       //HAY 2 FORMAS DE HACERLO
       /*
       * Podriamos hacer SELECT * FROM students; y luego meterlo en array y recorrerlo comprobando si hay algun password y usuario que igualen, como es mas largo, esto es mas corto.
       */
-      const result = await client.query("SELECT * FROM students WHERE username='"+nombre+"' AND password='"+password+"';");
+      const result = await client.query("SELECT * FROM students WHERE username='"+req.params.nombre+"'AND password='"+req.params.password+"';");
       const results = result.rows;
       if(results[0] != null) {
-        let usuarioLoged = {nombre,password};
+        let usuarioLoged = {name:req.params.nombre,password:req.params.password};
         res.render('loged',{usuario:JSON.stringify(usuarioLoged)});
         return;
       }else{
