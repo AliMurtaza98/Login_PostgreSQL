@@ -10,7 +10,7 @@ var login = [{name : 'Ali', pass : "1234"},
 //Conexion PostgreSQL (https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
 const { Pool } = require('pg');
 const pool = new Pool({
-  connectionString:"process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
   ssl: true
 });
 
@@ -45,7 +45,7 @@ app.get('/api/login/:nombre/:password', function (req,res){
 
 //PostgreSQL (ht  tps://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
 app.get('/db/api/login/:nombre/:password', async (req, res) => {
-    var username = req.params.username;
+    var nombre = req.params.nombre;
     var password = req.params.password;
     try {
       const client = await pool.connect()
@@ -56,7 +56,7 @@ app.get('/db/api/login/:nombre/:password', async (req, res) => {
       const result = await client.query("SELECT * FROM students WHERE username='"+nombre+"' AND password='"+password+"';");
       const results = result.rows;
       if(results[0] != null) {
-        let usuarioLoged = {username,password};
+        let usuarioLoged = {nombre,password};
         res.render('loged',{usuario:JSON.stringify(usuarioLoged)});
         return;
       }else{
