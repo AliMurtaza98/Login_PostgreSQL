@@ -13,6 +13,11 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: true
 });
+// Sin esto, da error de No Access Controll Allow Origin
+// -- Enlace --> https://stackoverflow.com/questions/7067966/how-to-allow-cors
+var cors = require('cors')
+var app = express()
+app.use(cors())
 
 //Llamamos al form que es el html desde la barra que es el localhost
 app.get('/', function(req, res) {
