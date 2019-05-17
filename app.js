@@ -10,8 +10,8 @@ var login = [{name : 'Ali', pass : "1234"},
 //Conexion PostgreSQL (https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database)
 const { Pool } = require('pg');
 const pool = new Pool({
-  //connectionString: "postgres://dqvxhzsqxsryzm:8d7c8b17367ef4ecf6ca52445ec99fe6f8bc6a3e67dc52f3fff97e59424a5db4@ec2-54-163-230-199.compute-1.amazonaws.com:5432/d5ia05gep63dm8",
-  connectionString: process.env.DATABASE_URL,
+  connectionString: "postgres://dqvxhzsqxsryzm:8d7c8b17367ef4ecf6ca52445ec99fe6f8bc6a3e67dc52f3fff97e59424a5db4@ec2-54-163-230-199.compute-1.amazonaws.com:5432/d5ia05gep63dm8",
+  //connectionString: process.env.DATABASE_URL,
   ssl: true
 });
 // Sin esto, da error de No Access Controll Allow Origin
